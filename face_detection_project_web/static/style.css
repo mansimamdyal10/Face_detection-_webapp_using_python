@@ -1,0 +1,102 @@
+/* Global Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 40px;
+    background: linear-gradient(135deg, #f4f6f8, #dce9f2);
+    color: #333;
+}
+
+/* Heading */
+h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    color: #1e3d59;
+}
+
+/* Form Styling */
+form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+input[type="file"] {
+    padding: 8px;
+    background: #fff;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border 0.3s ease;
+}
+
+input[type="file"]:hover {
+    border-color: #1e88e5;
+}
+
+button {
+    padding: 10px 20px;
+    background: #1e88e5;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background: #1565c0;
+}
+
+/* Error Message */
+p[style*="color:red"] {
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Results Section */
+h2 {
+    text-align: center;
+    margin-top: 40px;
+    color: #1e3d59;
+}
+
+p {
+    text-align: center;
+    font-size: 1.2rem;
+}
+
+/* Images Container */
+.images {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+/* Image Card */
+.images div {
+    text-align: center;
+}
+
+.images h3 {
+    margin-bottom: 10px;
+    color: #444;
+}
+
+.images img {
+    max-width: 400px;
+    border: 3px solid #ccc;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.images img:hover {
+    transform: scale(1.05);
+}
