@@ -1,11 +1,13 @@
-from flask import Flask, render_template, request, send_from_directory
+from flask import Flask, render_template, request
 from pathlib import Path
 import uuid
+import cv2
 
 from face_detection.detector import detect_faces
 from face_detection.utils import load_image, save_image, annotate_image
 
 app = Flask(__name__)
+
 UPLOAD_FOLDER = Path("static/uploads")
 RESULT_FOLDER = Path("static/results")
 UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
@@ -16,6 +18,7 @@ def index():
     if request.method == "POST":
         if "image" not in request.files:
             return render_template("index.html", error="No file part")
+
         file = request.files["image"]
         if file.filename == "":
             return render_template("index.html", error="No selected file")
@@ -33,12 +36,14 @@ def index():
 
         result_filename = f"{uuid.uuid4().hex}{file_ext}"
         result_path = RESULT_FOLDER / result_filename
-        save_image(result_path, annotated)
+        save_image(annotated, result_path)   # <--- FIXED ORDER
 
-        return render_template("index.html",
-                               uploaded_image=f"/{upload_path.as_posix()}",
-                               result_image=f"/{result_path.as_posix()}",
-                               face_count=len(faces))
+        return render_template(
+            "index.html",
+            uploaded_image=f"/{upload_path.as_posix()}",
+            result_image=f"/{result_path.as_posix()}",
+            face_count=len(faces)
+        )
 
     return render_template("index.html")
 
