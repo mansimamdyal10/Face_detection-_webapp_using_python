@@ -3,9 +3,6 @@ from pathlib import Path
 import uuid
 import cv2
 
-from face_detection.detector import detect_faces
-from face_detection.utils import load_image, save_image, annotate_image
-
 app = Flask(__name__)
 
 UPLOAD_FOLDER = Path("static/uploads")
@@ -13,6 +10,39 @@ RESULT_FOLDER = Path("static/results")
 UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
 RESULT_FOLDER.mkdir(parents=True, exist_ok=True)
 
+# -------------------------------
+#  OpenCV Face Detection Function
+# -------------------------------
+def detect_faces(img):
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+
+    faces = cascade.detectMultiScale(
+        gray,
+        scaleFactor=1.1,
+        minNeighbors=5,
+        minSize=(40, 40)
+    )
+    return faces
+
+# -------------------------------
+# Load, Save, Annotate Functions
+# -------------------------------
+def load_image(path):
+    return cv2.imread(str(path))
+
+def save_image(img, path):
+    cv2.imwrite(str(path), img)
+
+def annotate_image(img, faces):
+    for (x, y, w, h) in faces:
+        cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
+    return img
+
+
+# -------------------------------
+# Flask Routes
+# -------------------------------
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
@@ -23,20 +53,20 @@ def index():
         if file.filename == "":
             return render_template("index.html", error="No selected file")
 
-        # Save upload
+        # Save uploaded file
         file_ext = Path(file.filename).suffix
         filename = f"{uuid.uuid4().hex}{file_ext}"
         upload_path = UPLOAD_FOLDER / filename
         file.save(upload_path)
 
-        # Process
+        # Process image
         img = load_image(upload_path)
         faces = detect_faces(img)
         annotated = annotate_image(img, faces)
 
         result_filename = f"{uuid.uuid4().hex}{file_ext}"
         result_path = RESULT_FOLDER / result_filename
-        save_image(annotated, result_path)   # <--- FIXED ORDER
+        save_image(annotated, result_path)
 
         return render_template(
             "index.html",
@@ -46,6 +76,7 @@ def index():
         )
 
     return render_template("index.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
